@@ -8,6 +8,20 @@ namespace PromotionEngine.Buisness
 {
     public class CalculatePromotion
     {
+        public static int CalculateTypeAPromotionCost(List<CartItem> cartItems)
+        {
+            int totalPrice = 0;
+
+            return totalPrice;
+        }
+
+        public static int CalculateTypeBPromotionCost(List<CartItem> cartItems)
+        {
+            int totalPrice = 0;
+
+            return totalPrice;
+        }
+
         public static List<CartItem> CreateCart(int a, int b, int c, int d)
         {
             var itemList = SKUItems();
@@ -53,6 +67,8 @@ namespace PromotionEngine.Buisness
                     typeBPromotionItemList.Add(cartItem);
                 }
             }
+            totalprice += CalculateTypeAPromotionCost(typeAPromotionItemList);
+            totalprice += CalculateTypeBPromotionCost(typeBPromotionItemList);
 
             return totalprice;
         }
