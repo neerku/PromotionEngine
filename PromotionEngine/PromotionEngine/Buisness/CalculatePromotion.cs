@@ -37,7 +37,22 @@ namespace PromotionEngine.Buisness
 
         public int GetOrderValue(List<CartItem> cartItemList, List<Promotion> promotions)
         {
-            int totalprice = 0;
+            var totalprice = 0;
+            var typeAPromotionItemList = new List<CartItem>();
+            var typeBPromotionItemList = new List<CartItem>();
+            foreach (var cartItem in cartItemList)
+            {
+                var promotionType = promotions.Where(x => x.Id == cartItem.Item.PromotionalId).Select(x => x.PromotionType).FirstOrDefault();
+
+                if (promotionType is PromotionTypeA)
+                {
+                    typeAPromotionItemList.Add(cartItem);
+                }
+                else
+                {
+                    typeBPromotionItemList.Add(cartItem);
+                }
+            }
 
             return totalprice;
         }
