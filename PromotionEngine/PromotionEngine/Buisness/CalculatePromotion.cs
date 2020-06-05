@@ -8,16 +8,39 @@ namespace PromotionEngine.Buisness
 {
     public class CalculatePromotion
     {
-        public static int CalculateTypeAPromotionCost(List<CartItem> cartItems)
+        public static int CalculateTypeAPromotionCost(Dictionary<CartItem, PromotionTypeA> cartItems)
         {
-            int totalPrice = 0;
-
+            var totalPrice = 0;
+            foreach (var cartItem in cartItems)
+            {
+                if (cartItem.Key.Quantity >= cartItem.Value.Quantity)
+                {
+                    var modQuantity = cartItem.Key.Quantity % cartItem.Value.Quantity;
+                    if (modQuantity == 0)
+                    {
+                        var price = (cartItem.Key.Quantity / cartItem.Value.Quantity) * cartItem.Value.Price;
+                        totalPrice += price;
+                    }
+                    else
+                    {
+                        var remainingprice = modQuantity * cartItem.Key.Item.Price;
+                        totalPrice += remainingprice;
+                        var groupPrice = (cartItem.Key.Quantity / cartItem.Value.Quantity) * cartItem.Value.Price;
+                        totalPrice += groupPrice;
+                    }
+                }
+                else
+                {
+                    var price = cartItem.Key.Quantity * cartItem.Key.Item.Price;
+                    totalPrice += price;
+                }
+            }
             return totalPrice;
         }
 
-        public static int CalculateTypeBPromotionCost(List<CartItem> cartItems)
+        public static int CalculateTypeBPromotionCost(Dictionary<CartItem, PromotionTypeB> cartItems)
         {
-            int totalPrice = 0;
+            var totalPrice = 0;
 
             return totalPrice;
         }
@@ -52,21 +75,22 @@ namespace PromotionEngine.Buisness
         public int GetOrderValue(List<CartItem> cartItemList, List<Promotion> promotions)
         {
             var totalprice = 0;
-            var typeAPromotionItemList = new List<CartItem>();
-            var typeBPromotionItemList = new List<CartItem>();
+            var typeAPromotionItemList = new Dictionary<CartItem, PromotionTypeA>();
+            var typeBPromotionItemList = new Dictionary<CartItem, PromotionTypeB>();
             foreach (var cartItem in cartItemList)
             {
                 var promotionType = promotions.Where(x => x.Id == cartItem.Item.PromotionalId).Select(x => x.PromotionType).FirstOrDefault();
 
                 if (promotionType is PromotionTypeA)
                 {
-                    typeAPromotionItemList.Add(cartItem);
+                    typeAPromotionItemList.Add(cartItem, (PromotionTypeA)promotionType);
                 }
                 else
                 {
-                    typeBPromotionItemList.Add(cartItem);
+                    typeBPromotionItemList.Add(cartItem, (PromotionTypeB)promotionType);
                 }
             }
+
             totalprice += CalculateTypeAPromotionCost(typeAPromotionItemList);
             totalprice += CalculateTypeBPromotionCost(typeBPromotionItemList);
 
