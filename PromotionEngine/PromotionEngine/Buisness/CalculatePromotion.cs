@@ -41,7 +41,42 @@ namespace PromotionEngine.Buisness
         public static int CalculateTypeBPromotionCost(Dictionary<CartItem, PromotionTypeB> cartItems)
         {
             var totalPrice = 0;
+            var itemsCalculated = new Dictionary<CartItem, PromotionTypeB>();
+            foreach (var item in cartItems)
+            {
+                var groupedItems = cartItems.Keys.Where(x => item.Value.GroupedItems.Contains(x.Item.Id)).ToList();
+                if (itemsCalculated.Count > 0 && groupedItems.Count > 0)
+                {
+                    foreach (var calculateditem in itemsCalculated)
+                        groupedItems.Remove(calculateditem.Key);
+                }
+                if (groupedItems.Any())
+                {
+                    var item1count = groupedItems.First().Quantity;
+                    var item2Count = groupedItems.Last().Quantity;
+                    if (item1count == item2Count)
+                    {
+                        totalPrice += item.Value.Price * item1count;
+                    }
+                    else if (item1count > item2Count)
+                    {
+                        var remainingquant = item1count - item2Count;
+                        totalPrice += remainingquant * groupedItems.First().Item.Price;
+                        totalPrice += item2Count * item.Value.Price;
+                    }
+                    else
+                    {
+                        var remainingquant = item2Count - item1count;
+                        totalPrice += remainingquant * groupedItems.Last().Item.Price;
+                        totalPrice += item1count * item.Value.Price;
+                    }
 
+                    foreach (var cartItem in groupedItems)
+                    {
+                        itemsCalculated.Add(cartItem, item.Value);
+                    }
+                }
+            }
             return totalPrice;
         }
 
