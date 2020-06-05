@@ -10,6 +10,6 @@ namespace PromotionEngine.Model
     {
         public int Id { get; set; }
 
-        public string PromotionType { get; set; }
+        public PromotionType PromotionType { get; set; }
     }
 }
