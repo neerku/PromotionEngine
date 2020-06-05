@@ -43,5 +43,16 @@ namespace PromotionEngineTest
 
             Assert.AreEqual(totalprice, 280);
         }
+
+        [TestMethod]
+        public void TestScenarioD()
+        {
+            var cp = new CalculatePromotion();
+            var cart = CalculatePromotion.CreateCart(30, 50, 25, 20);
+            var promo = PromotionOffers.CreatePromotion();
+            var totalprice = cp.GetOrderValue(cart, promo);
+
+            Assert.AreEqual(totalprice, 3125);
+        }
     }
 }
